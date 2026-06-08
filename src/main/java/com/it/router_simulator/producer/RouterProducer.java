@@ -14,8 +14,29 @@ public class RouterProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void send(Router router) {
+   /* public void send(Router router) {
         kafkaTemplate.send(TOPIC, router);
         System.out.println("Sent Router Data: " + router.getRouterId());
-    }
+    }*/
+   public void send(Router router) {
+
+       kafkaTemplate.send(TOPIC, router)
+               .whenComplete((result, ex) -> {
+
+                   if (ex == null) {
+
+                       System.out.println(
+                               "Sent Router Data: "
+                                       + router.getRouterId()
+                       );
+
+                   } else {
+
+                       System.out.println(
+                               "Error sending message: "
+                                       + ex.getMessage()
+                       );
+                   }
+               });
+   }
 }
